@@ -1,53 +1,51 @@
 package org.aibles.worker2.util;
 
-
-
-import java.util.ArrayList;
-import java.util.List;
 import javax.persistence.criteria.Predicate;
-import liquibase.repackaged.org.apache.commons.lang3.ObjectUtils.Null;
-import liquibase.repackaged.org.apache.commons.lang3.StringUtils;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.aibles.worker2.entity.Worker;
 import org.springframework.data.jpa.domain.Specification;
 
-
 @Data
-public class WorkerSpecification {
+@NoArgsConstructor
+@AllArgsConstructor
+public class WorkerSpecification implements Specification<Worker> {
+  private SearchCriteria searchCriteria;
 
-  private String name;
-  private int date;
-  private int years_of_work;
-  private String address;
-  private double wage;
-  private double allowance;
+  @Override
+  public Predicate toPredicate(
+      Root<Worker> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+    if (isNumber(searchCriteria.getValue())) {
+      return criteriaBuilder.equal(root.get(searchCriteria.getKey()), searchCriteria.getValue());
+    } else {
+      return criteriaBuilder.like(
+          root.get(searchCriteria.getKey()), "%" + searchCriteria.getValue() + "%");
+    }
+  }
 
+  private boolean isInteger(String string) {
+    try {
+      Integer number = Integer.parseInt(string);
+    } catch (Exception e) {
+      return false;
+    }
+    return true;
+  }
 
-  public Specification<Worker> toSpecification() {
-  return (root, query, criteriaBuilder)
-      -> {
-    List<Predicate> predicate = new ArrayList<>();
-    if (StringUtils.isNotBlank(name)) {
-      predicate.add(criteriaBuilder.like(root.get("name"), StringUtils.wrap(name, '%')));
+  private boolean isFloat(String string) {
+    try {
+      Float number = Float.parseFloat(string);
+    } catch (Exception e) {
+      return false;
     }
+    return true;
+  }
 
-    if (date != 0) {
-      predicate.add(criteriaBuilder.equal(root.get("date"), date));
-    }
-    if (years_of_work != 0) {
-      predicate.add(criteriaBuilder.equal(root.get("years_of_work"), years_of_work));
-    }
-    if (StringUtils.isNotBlank(address)) {
-      predicate.add(criteriaBuilder.like(root.get("address"), StringUtils.wrap(address, '%')));
-    }
-    if (wage != 0) {
-      predicate.add(criteriaBuilder.equal(root.get("wage"), wage));
-    }
-    if (allowance != 0) {
-      predicate.add(criteriaBuilder.equal(root.get("allowance"), allowance));
-    }
-
-    return criteriaBuilder.and(predicate.toArray(Predicate[]::new));
-  };
-}
+  private boolean isNumber(String string) {
+    return isInteger(string) || isFloat(string);
+  }
 }

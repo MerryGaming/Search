@@ -1,9 +1,9 @@
 package org.aibles.worker2.configuration;
 
+import org.aibles.worker2.mapper.WorkerMapper;
 import org.aibles.worker2.repository.WorkerRepository;
 import org.aibles.worker2.service.WorkerService;
 import org.aibles.worker2.service.impl.WorkerServiceImpl;
-import org.apache.catalina.mapper.Mapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -26,6 +26,10 @@ public class WorkerConfiguration {
         return new WorkerServiceImpl(repository, modelMapper);
     }
 
+    @Bean
+    public WorkerMapper workerMapper(ModelMapper modelMapper) {
+        return new WorkerMapper(modelMapper);
+    }
 
 
 

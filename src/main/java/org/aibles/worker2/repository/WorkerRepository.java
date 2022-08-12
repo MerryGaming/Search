@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface WorkerRepository extends JpaRepository<Worker, Long> {
-  //    @Query(value = "SELECT * FROM worker p WHERE p.name LIKE %:query%",nativeQuery = true)
-  //    List<Worker> searchWorker(@Param("query") String query);
-  // @Query(value = "SELECT p FROM Worker p WHERE p.name LIKE %:query%")
-  // List<Worker> searchWorker(@Param("query") String query);
-  // }
-
+public interface WorkerRepository extends JpaRepository<Worker, Long>, JpaSpecificationExecutor<Worker> {
+//    @Query(value = "SELECT * FROM worker p WHERE p.name LIKE %:query%",nativeQuery = true)
+//    List<Worker> searchWorker(@Param("query") String query);
+//@Query(value = "SELECT p FROM Worker p WHERE p.name LIKE %:query%")
+//List<Worker> searchWorker(@Param("query") String query);
+  List<Worker> findAll(Specification<Worker> specification);
 }
+
