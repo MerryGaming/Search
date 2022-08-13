@@ -1,19 +1,17 @@
 package org.aibles.worker2.dto;
 
-import java.util.function.Function;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.Objects;
-import org.aibles.worker2.entity.Worker;
 
 /**
  * */
 @Data
 @Getter
 @Setter
-public class WorkerDto{ //implements Serializable {
+public class WorkerDto { //implements Serializable {
     @NotBlank
     @Size(min = 2, max = 128)
     private String name;
